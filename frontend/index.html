@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUBE//SOLVER — Interactive 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <div class="app">
+    <!-- ─── Control Panel ─────────────────────────────── -->
+    <aside class="panel">
+      <header class="brand">
+        <div class="brand-mark">
+          <span class="sq sq-w"></span><span class="sq sq-r"></span>
+          <span class="sq sq-b"></span><span class="sq sq-y"></span>
+        </div>
+        <div class="brand-text">
+          <h1>CUBE<span class="slash">//</span>SOLVER</h1>
+          <p class="tagline">interactive 3&times;3 · search visualizer</p>
+        </div>
+      </header>
+
+      <!-- Status readout -->
+      <section class="readout readout-3">
+        <div class="stat">
+          <label>STATE</label>
+          <div class="stat-val" id="state-val">SOLVED</div>
+        </div>
+        <div class="stat">
+          <label>MOVES</label>
+          <div class="stat-val" id="move-count">0</div>
+        </div>
+        <div class="stat">
+          <label>TIME</label>
+          <div class="stat-val" id="time-val">— ms</div>
+        </div>
+      </section>
+
+      <!-- Solver select -->
+      <section class="block">
+        <label class="block-label">SOLVER</label>
+        <div class="select-wrap">
+          <select id="solver-select">
+            <option value="IDDFS" data-max="7">IDDFS — iterative deepening</option>
+            <option value="DFS" data-max="6">DFS — depth-limited</option>
+            <option value="BFS" data-max="4">BFS — breadth-first</option>
+            <option value="IDA" data-max="13">IDA* — pattern database</option>
+          </select>
+        </div>
+        <p class="hint" id="solver-hint">max shuffle depth: 7 moves</p>
+      </section>
+
+      <!-- Shuffle depth -->
+      <section class="block">
+        <label class="block-label">SHUFFLE DEPTH <span class="depth-num" id="depth-num">7</span></label>
+        <input type="range" id="depth-range" min="1" max="7" value="7" />
+      </section>
+
+      <!-- Actions -->
+      <section class="actions">
+        <button class="btn btn-ghost" id="btn-shuffle">
+          <span class="btn-key">S</span> SHUFFLE
+        </button>
+        <button class="btn btn-primary" id="btn-solve">
+          <span class="btn-key">↵</span> SOLVE
+        </button>
+      </section>
+      <div class="undo-row">
+        <button class="btn btn-reset" id="btn-undo">↶ UNDO <span class="btn-key">⌫</span></button>
+        <button class="btn btn-reset" id="btn-reset">RESET TO SOLVED</button>
+      </div>
+
+      <!-- Playback -->
+      <section class="block">
+        <label class="block-label">PLAYBACK SPEED <span class="depth-num" id="speed-num">400ms</span></label>
+        <input type="range" id="speed-range" min="80" max="800" value="400" step="20" />
+        <div class="playback-row">
+          <button class="mini-btn" id="btn-step" title="Step one move">STEP ▸</button>
+          <button class="mini-btn" id="btn-pause" title="Pause / resume">⏸ PAUSE</button>
+        </div>
+      </section>
+
+      <!-- Move list -->
+      <section class="block grow">
+        <label class="block-label">
+          MOVE SEQUENCE
+          <span class="step-counter" id="step-counter"></span>
+        </label>
+        <div class="moves" id="moves-list">
+          <span class="moves-empty">no moves yet — shuffle to begin</span>
+        </div>
+      </section>
+
+      <footer class="panel-foot">
+        <span class="dot" id="conn-dot"></span>
+        <span id="conn-text">frontend preview · backend not connected</span>
+      </footer>
+    </aside>
+
+    <!-- ─── 3D Stage ──────────────────────────────────── -->
+    <main class="stage">
+      <div class="stage-grid"></div>
+      <canvas id="cube-canvas"></canvas>
+      <div class="stage-hud">
+        <span class="hud-item">DRAG to orbit</span>
+        <span class="hud-item">U D L R F B keys = manual moves</span>
+        <span class="hud-item">⇧ + key = prime</span>
+      </div>
+      <div class="toast" id="toast"></div>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
